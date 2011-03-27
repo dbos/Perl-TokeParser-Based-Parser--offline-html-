@@ -23,19 +23,26 @@ my $hashKey;
 while (my $token = $p->get_tag){
 	if ($token->[0] eq "strong" ){
 		$token=$p->get_token;
+	#Returned Token is an array, first element defines type, second is the text or tag text
+	#To clarify, I want the text that comes between the <strong> tags, so I find the strong
+	#tag, and then move to the next token after that, which is the text block it encloses.
 		my $textBlock=$token->[1];
+		#The expected first field data is a number; strip, then do the regex.
 		StripSpace($textBlock);
 		do {$firstField= $textBlock; $token = $p->get_tag('p');} if $textBlock=~ /^[\s\d]*$/s;
 		$token=$p->get_token;
 		$textBlock=$token->[1];
+		#Catches "Yada Yada text string (12345)" as a string and number.
 		if ($textBlock=~ /^(.*)\((\d*)\)$/s){
 			$textBlock=$1;
 			$hashKey=$2;
 			StripSpace($hashKey);
 			$myHash{$hashKey}{firstField}=$firstField;
+			# The following two lines just avoid initialization warnings.
 			$myHash{$hashKey}{secondField}="";
 			$myHash{$hashKey}{text}="";
 		}
+		#Catches "Yada Yada text string. Value Rating: DataHere" as two strings, split by "Value Rating: " 
 		if ($textBlock=~ /^(.*)Value Rating:(.*)$/s){
 			$textBlock=$1;
 			my $secondField=$2;
@@ -43,6 +50,7 @@ while (my $token = $p->get_tag){
 			$myHash{$hashKey}{secondField}=$secondField;
 			$myHash{$hashKey}{text}=$textBlock;
 		}
+		#This time no loop necessary to find strong, it's expected this time. Otherwise Same.
 		$p->get_tag('strong');
 		$token=$p->get_token;
 		my $thirdField= $token->[1];
