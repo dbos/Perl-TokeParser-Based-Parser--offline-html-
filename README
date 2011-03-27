@@ -1,0 +1,2 @@
+This script is a typical implementation of TokeParser.
+It is used to scrape an html page in order to reconstruct the database from which that page is built based on it's style and structure.
