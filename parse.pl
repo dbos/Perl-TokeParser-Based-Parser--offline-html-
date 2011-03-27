@@ -4,7 +4,7 @@
 # Usage: parse.pl [filename]
 
 # This parser works only on offline files, so no there is no LWP Dependency. 
-# See index.html provided for template input file
+# See example.html provided for template input file
 
 use strict;
 use warnings;
